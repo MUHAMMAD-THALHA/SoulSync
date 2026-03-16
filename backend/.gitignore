@@ -1,3 +1,5 @@
 node_modules/
 soulsync.db
+soulsync.db-wal
+soulsync.db-shm
 .env

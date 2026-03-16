@@ -130,10 +130,12 @@ router.post('/:id/trust-agreement', (req, res) => {
     return res.status(409).json({ error: 'You have already agreed to the trust agreement' });
   }
 
-  const field = isSender ? 'sender_trust_agreed' : 'receiver_trust_agreed';
-  db.prepare(
-    `UPDATE connections SET ${field} = 1, updated_at = datetime('now') WHERE id = ?`
-  ).run(connectionId);
+  // Use explicit queries per role to avoid any dynamic column interpolation
+  if (isSender) {
+    db.prepare(`UPDATE connections SET sender_trust_agreed = 1, updated_at = datetime('now') WHERE id = ?`).run(connectionId);
+  } else {
+    db.prepare(`UPDATE connections SET receiver_trust_agreed = 1, updated_at = datetime('now') WHERE id = ?`).run(connectionId);
+  }
 
   const fresh = db.prepare('SELECT * FROM connections WHERE id = ?').get(connectionId);
 
@@ -170,15 +172,16 @@ router.post('/:id/contact-reveal', (req, res) => {
   }
 
   const isSender = connection.sender_id === userId;
-  const field = isSender ? 'sender_contact_reveal' : 'receiver_contact_reveal';
-
   if ((isSender && connection.sender_contact_reveal) || (!isSender && connection.receiver_contact_reveal)) {
     return res.status(409).json({ error: 'You have already requested contact reveal' });
   }
 
-  db.prepare(
-    `UPDATE connections SET ${field} = 1, updated_at = datetime('now') WHERE id = ?`
-  ).run(connectionId);
+  // Use explicit queries per role to avoid any dynamic column interpolation
+  if (isSender) {
+    db.prepare(`UPDATE connections SET sender_contact_reveal = 1, updated_at = datetime('now') WHERE id = ?`).run(connectionId);
+  } else {
+    db.prepare(`UPDATE connections SET receiver_contact_reveal = 1, updated_at = datetime('now') WHERE id = ?`).run(connectionId);
+  }
 
   const fresh = db.prepare('SELECT * FROM connections WHERE id = ?').get(connectionId);
 

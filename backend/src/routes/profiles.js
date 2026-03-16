@@ -223,16 +223,16 @@ router.put('/me', (req, res) => {
   const merged = { ...user, ...updates };
   const completed = isProfileComplete(merged) ? 1 : 0;
   updates.profile_completed = completed;
-  updates.updated_at = "datetime('now')";
 
+  const safeAllowedFields = new Set([...allowedFields, 'profile_completed']);
   const setClauses = Object.keys(updates)
-    .filter((k) => k !== 'updated_at')
+    .filter((k) => safeAllowedFields.has(k))
     .map((k) => `"${k}" = ?`)
     .concat(`updated_at = datetime('now')`)
     .join(', ');
 
   const values = Object.entries(updates)
-    .filter(([k]) => k !== 'updated_at')
+    .filter(([k]) => safeAllowedFields.has(k))
     .map(([, v]) => v);
 
   db.prepare(`UPDATE users SET ${setClauses} WHERE id = ?`).run(...values, currentUserId);
