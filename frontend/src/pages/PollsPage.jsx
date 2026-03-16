@@ -25,7 +25,7 @@ function PollCard({ poll, onVote }) {
     <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', lineHeight: 1.4 }}>{poll.question || poll.title}</h3>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', lineHeight: 1.4 }}>{poll.title}</h3>
         <span className="badge" style={{
           background: isActive ? 'rgba(72,187,120,0.12)' : '#edf2f7',
           color: isActive ? 'var(--trust-green)' : 'var(--text-light)',
@@ -78,7 +78,7 @@ function PollCard({ poll, onVote }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {voted && <span style={{ fontSize: 14 }}>✓</span>}
                   <span style={{ fontSize: 14, fontWeight: voted ? 700 : 500, color: voted ? 'var(--accent)' : 'var(--text)' }}>
-                    {option.text || option.label}
+                    {option.option_text}
                   </span>
                 </div>
                 {(hasVoted || !isActive) && (
