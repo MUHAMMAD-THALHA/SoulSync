@@ -56,4 +56,7 @@ The core mission of SoulSync is to create a safe, respectful, and emotionally me
 📌 Author
 # Muhammad Thalha
 
+Deploy Link :
+
+https://soul-sync-a8ni.vercel.app/
 ---------------------------------------------------------------
