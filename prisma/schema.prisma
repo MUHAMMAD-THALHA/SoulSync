@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  hashedPassword String
+  name           String?
+  createdAt      DateTime         @default(now())
+  profile        Profile?
+  trustScore     TrustScore?
+  matchesAsUser1 Match[]          @relation("MatchUser1")
+  matchesAsUser2 Match[]          @relation("MatchUser2")
+  agreements     TrustAgreement[]
+}
+
+model Profile {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  age        Int
+  gender     String
+  bio        String
+  interests  String   // JSON array stored as string
+  values     String   // JSON array stored as string
+  intentions String
+  location   String?
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Match {
+  id              String           @id @default(cuid())
+  user1Id         String
+  user2Id         String
+  user1           User             @relation("MatchUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2           User             @relation("MatchUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  user1Interested Boolean          @default(false)
+  user2Interested Boolean          @default(false)
+  matched         Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  agreements      TrustAgreement[]
+
+  @@unique([user1Id, user2Id])
+}
+
+model TrustAgreement {
+  id              String   @id @default(cuid())
+  userId          String
+  matchId         String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match           Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  respectAgreed   Boolean  @default(false)
+  honestyAgreed   Boolean  @default(false)
+  agreedAt        DateTime @default(now())
+
+  @@unique([userId, matchId])
+}
+
+model TrustScore {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score           Int     @default(50)
+  profileComplete Boolean @default(false)
+  verified        Boolean @default(false)
+  reportCount     Int     @default(0)
+}
