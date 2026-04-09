@@ -45,10 +45,13 @@ The core mission of SoulSync is to create a safe, respectful, and emotionally me
 
 ## Installation
 
-git clone https://github.com/MUHAMMAD-THALHA/SoulSync
-cd SoulSync
-npm install
-npm run dev
+* git clone https://github.com/MUHAMMAD-THALHA/SoulSync
+
+* cd SoulSync
+
+* npm install
+
+* npm run dev
 
 📌 Author
 # Muhammad Thalha
